@@ -1,0 +1,6 @@
+healthy
+Dementia with Lewy Bodies DLB
+Alzheimer's disease AD
+*healthy
+*DLB
+*AD

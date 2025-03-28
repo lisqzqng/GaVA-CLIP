@@ -1,0 +1,23 @@
+__pycache__
+*.py[cod]
+*$py.class
+
+slurm-*
+
+train_output/
+pretrained/
+
+video_dataset/io_internal.py
+
+# extensions
+*.png
+*.jpg
+*.mp4
+
+# folders
+datasets/
+logs/
+.vscode/
+data/*
+videos/*
+eval_output/*

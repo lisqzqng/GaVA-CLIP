@@ -1,0 +1,10 @@
+healthy
+early Dementia with Lewy Bodies DLB
+early Alzheimer's disease AD
+severe Dementia with Lewy Bodies DLB
+severe Alzheimer's disease AD
+*healthy
+*early DLB
+*early AD
+*severe DLB
+*severe AD

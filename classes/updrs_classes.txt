@@ -1,0 +1,8 @@
+normal gait
+slight gait impairment
+mild gait impairment
+moderate gait impairment
+*normal
+*slight
+*mild
+*moderate

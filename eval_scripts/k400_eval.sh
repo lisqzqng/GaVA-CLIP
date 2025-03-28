@@ -1,0 +1,24 @@
+python3.8 -u -m torch.distributed.run --nproc_per_node 1 \
+  ./training/train.py \
+    --eval_only \
+    --backbone_path "./pretrained/clip_pretrained.pth" \
+    --checkpoint_path "pretrained/ckpt_k400.pth" \
+    --val_data_root "datasets/kinetics-dataset/k400_resized/test" \
+    --num_steps 30000 \
+    --save_freq 5000 \
+    --eval_freq 5000 \
+    --batch_size 256 \
+    --batch_split 8 \
+    --val_list_path "datasets/kinetics-dataset/k400_resized/test_for_model.csv" \
+    --auto_augment rand-m7-n4-mstd0.5-inc1 \
+    --mean 0.48145466 0.4578275 0.40821073 \
+    --std 0.26862954 0.26130258 0.27577711 \
+    --num_workers 6 \
+    --num_frames 8 \
+    --use_text_prompt_learning \
+    --text_num_prompts 8 \
+    --use_text_prompt_CSC \
+    --use_summary_token \
+    --use_local_prompts \
+    --use_global_prompts \
+    --num_global_prompts 8

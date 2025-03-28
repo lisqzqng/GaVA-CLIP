@@ -1,0 +1,6 @@
+normal
+slight difficulty
+moderate difficulty
+*normal
+*slight
+*moderate
