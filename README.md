@@ -33,7 +33,7 @@ The class mappings in the open-source weights are provided at [Kinetics-400 clas
 
 ### Download Pretrained CLIP Checkpoint
 
-Download the **[pretrained CLIP checkpoint](https://drive.google.com/file/d/17xSat9ZqL8p3RjpfTdqjxrBfcwZgZ2OE/view?usp=sharing)**  and place under the `pretrained directory`.
+Download the **[pretrained CLIP checkpoint](https://seafile.unistra.fr/f/42a0de36d9fc43979c82/)**  and place under the `pretrained directory`.
 
 ### Training Instruction
 # 1. Data preparation
