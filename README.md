@@ -37,15 +37,12 @@ Download the **[pretrained CLIP checkpoint](https://seafile.unistra.fr/f/42a0de3
 
 ### Training Instruction
 # 1. Data preparation
-Donwload the example TULIP 10-subjects data:
-```bash
-mkdir -p datasets
-cd datasets
-wget --content-disposition "https://seafile.unistra.fr/f/3ef03cc3a9394d7a9c48/?dl=1"
-tar -xf tulip.tar.xz
-rm tulip.tar.xz
-cd ../
+Please follow the instructions in **[TULIP dataset repository](https://zenodo.org/records/14199925)** to donwload gait videos of 11 Subjects. 
+And follow the data preprocessinig:
 ```
+(TO be added)
+```
+
 Prepare the initial continuous per-class textual embeddings:
 ```bash
 wget --content-disposition "https://seafile.unistra.fr/f/d90aa57bc07b434f9f56/?dl=1"
