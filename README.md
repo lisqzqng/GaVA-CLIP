@@ -40,7 +40,7 @@ Download the **[pretrained CLIP checkpoint](https://seafile.unistra.fr/f/42a0de3
 Please follow the instructions in **[TULIP dataset repository](https://zenodo.org/records/14199925)** to donwload gait videos of 11 Subjects. 
 And follow the data preprocessinig:
 ```
-(TO be added)
+(To be added)
 ```
 
 Prepare the initial continuous per-class textual embeddings:
