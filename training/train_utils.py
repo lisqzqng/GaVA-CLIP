@@ -26,16 +26,7 @@ CLASS_LABEL_DICT = {
 
 No_Healthy = True # only make 2-class diagnosis classfiication
 MIN_REST = 20
-STRIDE = 25
-'''split_names_fp =  './datasets/hospital/split_names.json'
-# load predefined splited names for each fold
-assert osp.isfile(split_names_fp), f"split names file {split_names_fp} not found !!"
-split_names = joblib.load(split_names_fp)
-# preprocess video names
-for fold in split_names:
-    for key in split_names[fold]:
-        split_names[fold][key] = list(set([x.split('*')[0] for x in split_names[fold][key]]))
-        '''
+STRIDE = 30
 
 def update_updrs_annotations(full_anno_file='./datasets/hospital/robertsau_annotation_UPDRS_2024.xlsx', csvfile='data/updrs.csv',):
     " update the UPDRS annotations using the file of updated full annotations "
@@ -66,13 +57,13 @@ def update_updrs_annotations(full_anno_file='./datasets/hospital/robertsau_annot
 def split_videos_into_chunks(viddir, tablefile, outdir, seqlen=70, 
                              val_subs=['Subject_1'], fps=30, dataset='hospital'):
     """
-    giving the video folder and the intergal csv file,
+    giving the video folder `` and the intergal csv file,
     split the videos into chunks for train/val,
     rewrite the annotations into new csv files
     """
-    assert dataset in ['hospital', 'tulip'], f"Unknown dataset: {dataset} !!"
-    # if osp.isdir(outdir):
-    #     shutil.rmtree(outdir)
+    assert dataset=='tulip', f"Unknown dataset: {dataset} !!"
+    if osp.isdir(outdir):
+        shutil.rmtree(outdir)
     os.makedirs(outdir, exist_ok=True)
     vidnames = [x.split('.')[0] for x in os.listdir(viddir) if x.endswith('.mp4')]
     # load annotations
@@ -85,7 +76,7 @@ def split_videos_into_chunks(viddir, tablefile, outdir, seqlen=70,
     # split the videos into train/val
     train_names, val_names = [], []
     for vn in vidnames:
-        subname = '_'.join(vn.split('_')[:2]) if dataset == 'tulip' else vn.split('_')[0]
+        subname = '_'.join(vn.split('_')[:2])
         if subname in val_subs:
             val_names.append(vn)
         else:
@@ -121,7 +112,7 @@ def split_videos_into_chunks(viddir, tablefile, outdir, seqlen=70,
             for i in range(seqlen-1-last_frame):
                 shutil.copy(osp.join(img_folder, img_list[-1]), osp.join(img_folder, f"{last_frame+i+2:06d}.png"))
             last_frame = seqlen-1
-        if is_train:
+        if is_train: 
             # generate frame indices using STRIDE and cover the whole videos if the rest frames > MIN_REST
             index = np.arange(0, last_frame, STRIDE)
             # remove the last indices if index[-i]+seqlen>last_frame
@@ -226,7 +217,10 @@ def save_split_names(chunk_dir, outdir='./', nfold=5):
     return
     
 def get_3cls_csv(diag_csv, score_csv):
-    "convert multi-class labels to 3-class labels"
+    '''
+    Convert multi-class labels to 3-class labels.\n
+    Targeted for dementia subtyping, and multiclass (with 'moderate') impairment severity scoring
+    '''
     diag_df = pd.read_csv(diag_csv, header=None)
     diag_dict = {x[0]: x[1] for x in diag_df.values}
     for k,v in diag_dict.items():
@@ -300,100 +294,6 @@ def get_average_class_distribution(label_file='data/tulip_label_60.xlsx', video_
     for k,v in diag_dict.items():
         print('Diagnosis {:d}: {:f}'.format(k, v/nfold))
     return
-
-def draw_confusion_matrix(name, cm_dir=None, type='updrs'):
-    import numpy as np
-    import matplotlib.pyplot as plt
-    import seaborn as sns
-
-    # Sample 4x4 confusion matrix
-    # confusion_matrix = np.array([
-    #     [68, 20,1,0],
-    #     [6,140,3,3],
-    #     [0,39,23,3],
-    #     [0,21,6,41]
-    # ])
-    if cm_dir is not None:
-        cm_lists = [x for x in os.listdir(cm_dir) if x.endswith('.txt') and 'metrics' not in x]
-        # sort the cm_lists
-        cm_lists = sorted(cm_lists, key=lambda x: int(x.split('fold-')[-1].split('.')[0]))
-        # load per-fold confusion matrix
-        if type == 'updrs':
-            confusion_matrix = np.zeros((3, 3)) 
-        else:
-            raise ValueError("Only support UPDRS now !!")
-        fold_acc = {}
-        for cm in cm_lists:
-            with open(osp.join(cm_dir, cm), 'r') as f:
-                lines = f.readlines()
-                # load the fold conf_mat and calculate per-fold accuracy
-                cm_fold = np.zeros_like(confusion_matrix) 
-                for i in range(len(lines)):
-                    cm_fold[i] += np.array([int(x) for x in lines[i].strip().split()])
-                acc_fold = np.sum(np.diag(cm_fold))/np.sum(cm_fold)
-                fold_acc[cm.split('_')[-1].split('.')[0]] = acc_fold
-                confusion_matrix += cm_fold
-
-    # calculate metrics based on conf_mat
-    accuracy = np.sum(np.diag(confusion_matrix))/np.sum(confusion_matrix)
-    precision = np.nan_to_num(np.diag(confusion_matrix)/np.sum(confusion_matrix, axis=0),0)
-    recall = np.nan_to_num(np.diag(confusion_matrix)/np.sum(confusion_matrix, axis=1),0)
-    f1 = 2*precision*recall/(precision+recall+1e-8)
-    weighted_f1 = np.sum(f1*np.sum(confusion_matrix, axis=1)/np.sum(confusion_matrix))
-
-    # save to txt file
-    with open(osp.join(cm_dir, f'{name}_metrics.txt'), 'w') as f:
-        for k, v in fold_acc.items():
-            f.write(f'{k}: {v:.4f}\t')
-        f.write(f'\nAccuracy: {accuracy}\n')
-        f.write(f'F1: {f1.mean()}\n')
-        f.write(f'Precision: {precision.mean()}\n')
-        f.write(f'Recall: {recall.mean()}\n')
-        f.write(f'Weighted F1: {weighted_f1}\n')
-    # confusion_matrix = np.array([
-    #     [59,24,2,4],
-    #     [5,130,8,10],
-    #     [3,28,26,8],
-    #     [0,17,13,38]
-    # ])
-
-    # Sample 5x5confusion matrix
-    # confusion_matrix = np.array([
-    #     [33,3,3,0,5],
-    #     [3,51,9,3,1],
-    #     [0,19,100,0,2],
-    #     [0,1,3,59,0],
-    #     [0,7,10,0,58],
-    # ])
-    # confusion_matrix = np.array([
-    #     [32,3,4,0,5],
-    #     [0,53,7,1,6],
-    #     [0,4,100,0,17],
-    #     [0,0,1,61,1],
-    #     [0,0,4,0,71],
-    # ])
-
-    # Create a heatmap with larger label and tick sizes
-    plt.figure(figsize=confusion_matrix.shape)
-    ax = sns.heatmap(confusion_matrix, annot=False, cmap='Blues', cbar=True, square=True, linewidths=0.5, linecolor='white')
-
-    # Customize label and tick sizes
-    ax.set_xlabel('Predicted labels', fontsize=20)
-    ax.set_ylabel('True labels', fontsize=20)
-    ax.tick_params(axis='both', which='major', labelsize=15)
-
-    # Customize tick labels
-    class_labels = CLASS_LABEL_DICT['updrs'] if 'updrs' in name else CLASS_LABEL_DICT['diag']
-    ax.set_xticklabels(class_labels, rotation=45, ha='right', fontsize=15)
-    ax.set_yticklabels(class_labels, rotation=0, fontsize=15)
-    
-    # # Add color bar with label
-    # colorbar = ax.collections[0].colorbar
-    # colorbar.set_label('Samples', size=15)
-    # colorbar.ax.tick_params(labelsize=12)
-
-    plt.savefig(osp.join(cm_dir if cm_dir else './images', name+'.png'), dpi=300, bbox_inches='tight')
-    # plt.show()
 
 def split_videos_per_subjects(csv_label='./datasets/parkinson_label.csv', 
                               vid_dir='./datasets/parkinson/',
@@ -709,25 +609,17 @@ def gold_standard2label(csv_file='datasets/orig_tulip/gait_label.csv',
     return
 
 if __name__ == '__main__':
-    # ================== public PD data set ================== #
-    # crop_video_with_bbox()
-    # split_real_dataset()
-    # draw_confusion_matrix(name='conf_mat_updrs_gava-clip_tulip', cm_dir='logs/GaVA-CLIP_tulip_results', type='updrs')
-    # get_average_class_distribution()
-    # ================== Robertsau hospital data set ================== #
-    nfold = 10
-    vratio = 1/nfold *2
-    sratio = 1/nfold
+    # ================== TULIP data set ================== #
+    nfold = 10 # equals total number of version 1 TULIP subjects@
     num_frames = 70
     dataset_name = 'tulip'
-    tablefile = 'data/label_118.xlsx' if dataset_name == 'hospital' else 'data/tulip_label_60.xlsx'
+    tablefile = 'data/tulip_label_60.xlsx'
     # get the video names from xlsx file
     with open(tablefile, 'rb') as f:
         table = pd.read_excel(f)
         vidnames = table['vidname'].values.tolist()
     chunk_csv_format = 'datasets/{:s}/chunks_{:d}/{:s}_{:s}.csv'
-    # TODO write val_subs for Robertsau hospital data
-    subnames = ['_'.join(x.split('_')[:2]) for x in vidnames] if dataset_name == 'tulip' else [x.split('_')[0] for x in vidnames]
+    subnames = [ '_'.join(x.split('_')[:2]) for x in vidnames ]
     subnames = list(set(subnames))
     # sort the subnames
     subnames = sorted(subnames, key=lambda x: int(x.split('_')[1]))
@@ -754,4 +646,4 @@ if __name__ == '__main__':
     # with open(f'datasets/{dataset_name}/split_names.json', 'w') as f:
     #     json.dump(split_names, f, indent=4)
 
-    get_average_class_distribution()
+    # get_average_class_distribution()
