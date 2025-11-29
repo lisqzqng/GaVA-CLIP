@@ -45,7 +45,7 @@ And follow the data preprocessinig:
 
 Prepare the initial continuous per-class textual embeddings:
 ```bash
-wget --content-disposition "https://seafile.unistra.fr/f/d90aa57bc07b434f9f56/?dl=1"
+wget --content-disposition "https://drive.google.com/uc?export=download&id=1ncddV8M8p_yzUjztmECKK-LgJQH-WWiw"
 tar -xf data.tar.xz
 rm data.tar.xz
 ```
