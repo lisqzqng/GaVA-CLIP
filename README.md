@@ -33,19 +33,16 @@ The class mappings in the open-source weights are provided at [Kinetics-400 clas
 
 ### Download Pretrained CLIP Checkpoint
 
-Download the **[pretrained CLIP checkpoint](https://drive.google.com/file/d/17xSat9ZqL8p3RjpfTdqjxrBfcwZgZ2OE/view?usp=sharing)**  and place under the `pretrained directory`.
+Download the **[pretrained CLIP checkpoint](https://seafile.unistra.fr/f/42a0de36d9fc43979c82/)**  and place under the `pretrained directory`.
 
 ### Training Instruction
 # 1. Data preparation
-Donwload the example TULIP 10-subjects data:
-```bash
-mkdir -p datasets
-cd datasets
-wget --content-disposition "https://seafile.unistra.fr/f/3ef03cc3a9394d7a9c48/?dl=1"
-tar -xf tulip.tar.xz
-rm tulip.tar.xz
-cd ../
+Please follow the instructions in **[TULIP dataset repository](https://zenodo.org/records/14199925)** to donwload gait videos of 11 Subjects. 
+And follow the data preprocessinig:
 ```
+(To be added)
+```
+
 Prepare the initial continuous per-class textual embeddings:
 ```bash
 wget --content-disposition "https://seafile.unistra.fr/f/d90aa57bc07b434f9f56/?dl=1"
