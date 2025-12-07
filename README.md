@@ -51,15 +51,19 @@ rm data.tar.xz
 ```
 
 # 2. Launch the training and validation
-To train GaVA-CLIP in a 10-fold cross-validation manner using [TULIP dataset](https://zenodo.org/records/14199925) on Nvidia GeForce RTX 3090:
+Here, we provide the code for leave-one-subject-out cross-validation on the  [TULIP data v1](https://zenodo.org/records/14199925).
 ```bash
 source train_scripts/updrs_3cls_train_tulip.sh
 ``` 
 The output models and results can be found in in `./logs/`.
 
+Specifically, we exclude Subject 1 from the available 11 subjects. The cross-validation is conducted 10-fold. In each fold: we use 9 subjects for training and thr remaining 1 subject for validation (a different subject held out each fold).
+The training scripts are configured for an Nvidia RTX 6000 Ada GPU.
 
-# 3. Cross-validation results compared with SOTA on TULIP dataset
-Comparing the Gait Scoring performance of GaVA-CLIP with SOTA methods on [TULIP dataset](https://zenodo.org/records/14199925). Evaluation metrics are top-1 accuracy (%), F1-
+
+
+# 3. Cross-validation results compared with SOTA.
+Comparing the Gait Scoring performance of GaVA-CLIP with SOTA methods on 10 subjects of [TULIP data v1](https://zenodo.org/records/14199925). Evaluation metrics are top-1 accuracy (%), F1-
 score, precision rate (%), recall rate (%), and (classwise) weighted F1-score.
 |Method                |Accuracy| F1-score| Precision| Recall| weighted F1-score|
 |-----------------|----------:|-------:|-------:|-------:|-------------:|
