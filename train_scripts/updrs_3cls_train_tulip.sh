@@ -9,9 +9,9 @@ python3.8 -u -m torch.distributed.run --nproc_per_node 1 \
     --text_prompt_classes_path "./classes/updrs_3cls_classes.txt" \
     --checkpoint_dir "${exp_dir}" \
     --auto_resume \
-    --num_steps 800 \
+    --num_steps 2000 \
     --save_freq 2001 \
-    --eval_freq 1 \
+    --eval_freq 40 \
     --batch_size 4 \
     --backbone_path "./pretrained/clip_pretrained.pth" \
     --mean 0.48145466 0.4578275 0.40821073 \
