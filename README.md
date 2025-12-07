@@ -51,13 +51,30 @@ rm data.tar.xz
 ```
 
 # 2. Launch the training and validation
-To train GaVA-CLIP in a 10-fold cross-validation manner using TULIP datset on Nvidia GeForce RTX 3090:
+To train GaVA-CLIP in a 10-fold cross-validation manner using [TULIP dataset](https://zenodo.org/records/14199925) on Nvidia GeForce RTX 3090:
 ```bash
 source train_scripts/updrs_3cls_train_tulip.sh
 ``` 
 The output models and results can be found in in `./logs/`.
 
 
+# 3. Cross-validation results compared with SOTA on TULIP dataset
+Comparing the Gait Scoring performance of GaVA-CLIP with SOTA methods on [TULIP dataset](https://zenodo.org/records/14199925). Evaluation metrics are top-1 accuracy (%), F1-
+score, precision rate (%), recall rate (%), and (classwise) weighted F1-score.
+|Method                |Accuracy| F1-score| Precision| Recall| weighted F1-score|
+|-----------------|----------:|-------:|-------:|-------:|-------------:|
+OF-DDNet            |83.22   |   0.828   |    84.26   |    85.32   |    0.821 |
+KShapeNet           |67.86   |    0.638   |    73.44   |    64.45   |    0.650 |
+GaitForeMer         | 74.53   |    0.747   |    75.13   |    74.53   |    0.743 |
+Vita-CLIP              |87.88   |    0.879   |    88.27   |    88.24   |    0.886 |
+GaVA-CLIP (Ours)| 92.29   |    0.917   |    92.50   |    91.28  | 0.921 |
+
+# References
+For the SOTA methods, we greatly benefit from the following resources:
++ [OF-DDNet](https://github.com/mlu355/PD-Motor-Severity-Estimation).
++ [KShapNet](https://github.com/MLMS-CG/AD-DLB-Classifier).
++ [GaitForeMer](https://github.com/markendo/GaitForeMer).
++ [Vita-CLIP](https://github.com/TalalWasim/Vita-CLIP).
 
 ## Acknowledgements
 Our code is based on [Vita-CLIP](https://github.com/TalalWasim/Vita-CLIP), and the continuous per-class textual embeddings are encoded by [KEPLER](https://github.com/THU-KEG/KEPLER).
