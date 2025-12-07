@@ -57,7 +57,7 @@ source train_scripts/updrs_3cls_train_tulip.sh
 ``` 
 The output models and results can be found in in `./logs/`.
 
-Specifically, we exclude Subject 1 from the available 11 subjects. The cross-validation is conducted 10-fold. In each fold: we use 9 subjects for training and thr remaining 1 subject for validation (a different subject held out each fold).
+Specifically, we exclude Subject 1 from the available 11 subjects. The cross-validation is conducted 10-fold. In each fold, we use 9 subjects for training and the remaining 1 subject for validation (i.e., a different subject held out each fold).
 The training scripts are configured for an Nvidia RTX 6000 Ada GPU.
 
 
